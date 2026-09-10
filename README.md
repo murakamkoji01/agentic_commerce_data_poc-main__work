@@ -69,40 +69,35 @@ src/organize_att.pl < ../data/aircon/eav/aircon-full-100/output/silver_attribute
 
 ### LLMにフィードするための”質問＋商品情報”ペアを作成
 ```bash
-python3 tools/mk_experiment_patterns_v2.py 
+python3 src/mk_experiment_patterns_v2.py 
   -dir ./c0 
   -f Question100Examples_v1.tsv 
   -out q_c0
   
-python3 tools/mk_experiment_patterns_v2.py 
+python3 src/mk_experiment_patterns_v2.py 
   -dir ./c1 
   -f Question100Examples_v1.tsv 
   -out q_c1
 
-python3 tools/mk_experiment_patterns_v2.py 
+python3 src/mk_experiment_patterns_v2.py 
   -dir ./c2 
   -f Question100Examples_v1.tsv 
   -out q_c2
-
-python3 src/eval_postprocessing.py \
-  -f data/samples/yodobashi_attop20260622_attrex.tsv 
-  -all 
-  -o eval_test_all.tsv
 ```
 
 ### LLMによる分類（対象の商品の情報が、与えられた質問に対してYESかNOか）
 - 実際に利用するモデルは可変なので、適宜指定する
 ```bash
-python3 tools/llm_asking2productinfo_internal.py 
+python3 src/llm_asking2productinfo_internal.py 
   -f q_c1/q_001_c0.tsv > expGLM52/res_q001_c1_glm52.tsv 
 
-python3 tools/llm_asking2productinfo_gemini.py 
+python3 src/llm_asking2productinfo_gemini.py 
   -f q_c1/q_001_c0.tsv > expGemini35flash/res_q001_c1_gemini35flash.tsv 
 
-python3 tools/llm_asking2productinfo.py 
+python3 src/llm_asking2productinfo.py 
   -f q_c1/q_001_c0.tsv > expGPT54nano/res_q001_c1_gpt54nano.tsv 
 
-python3 tools/llm_asking2productinfo_rakutenai.py 
+python3 src/llm_asking2productinfo_rakutenai.py 
   -f q_c1/q_001_c0.tsv > expRakutenai30/res_q001_c1_rakutenai30.tsv  
 ```
 
@@ -110,17 +105,17 @@ python3 tools/llm_asking2productinfo_rakutenai.py
 - Micro (Recall/Precision/Fscore), Macro (Recall/Precision/Fscore)
 - 各モデルともにc0/c1/c2のデータを対象に分類しているので、その結果の評価
 ```bash
-python3 tools/eval_ac_product2.py 
+python3 src/eval_ac_product2.py 
   -f Question100Examples_v1.tsv 
   -dir expGLM52 
   -type c0 > eval_c0_GLM52.txt
 
-python3 tools/eval_ac_product2.py 
+python3 src/eval_ac_product2.py 
   -f Question100Examples_v1.tsv 
   -dir expGLM52 
   -type c1 > eval_c1_GLM52.txt
 
-python3 tools/eval_ac_product2.py 
+python3 src/eval_ac_product2.py 
   -f Question100Examples_v1.tsv 
   -dir expGLM52 -type c2 > eval_c2_GLM52.txt
 ```
